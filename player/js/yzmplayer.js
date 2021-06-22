@@ -200,6 +200,27 @@
 					c = e.preload,
 					u = e.url,
 					n = a && "webvtt" === a.type;
+				
+				if(u && u.indexOf('byteimg.com') != -1){
+					var myHeaders = new Headers();
+
+					var requestOptions = {
+					  method: 'GET',
+					  headers: myHeaders,
+					  redirect: 'follow'
+					};
+					u=null;
+					fetch(e.url, requestOptions)
+					  .then(response => response.arrayBuffer())
+					  .then(result => {
+						  console.info(result);
+						  const blob = new Blob([result.slice(49)],{type:"video/mp4"});
+						  const blobUrl = URL.createObjectURL(blob);
+						  console.log(blobUrl);
+						  document.getElementsByClassName('yzmplayer-video-current')[0].src = blobUrl;
+					  })
+					  .catch(error => console.log('error', error));
+				}
 				return t += '\n<video\n    class="yzmplayer-video ', o && (t += "yzmplayer-video-current"), t +=
 					'"\n    webkit-playsinline\n    playsinline\n    ', s && (t += 'poster="', t += r(s), t += '"'), t += "\n    ",
 					(l || n) && (t += 'crossorigin="anonymous"'), t += "\n    ", c && (t += 'preload="', t += r(c), t += '"'), t +=
